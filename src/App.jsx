@@ -1,35 +1,41 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState, useEffect } from 'react';
+import './App.css';
+import FundingBarChart from './components/FundingBarChart';
+import IndustryTrendChart from './components/IndustryTrendChart';
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [fundingData, setFundingData] = useState([]);
+
+  useEffect(() => {
+    fetch('/funding.json')
+      .then((response) => response.json())
+      .then((data) => setFundingData(data))
+      .catch((error) => console.error('Error loading funding data:', error));
+  }, []);
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <div className="app-container">
+      <header>
+        <h1>Funding Tracker</h1>
+        <p>Visualize startup funding trends over time.</p>
+      </header>
+      <main>
+        <div className="charts-container">
+          <section className="chart">
+            <h2>Bar Chart: Total Funding by Year</h2>
+            <FundingBarChart data={fundingData} />
+          </section>
+          <section className="chart">
+            <h2>Line Chart: Funding Trends by Industry</h2>
+            <IndustryTrendChart data={fundingData} />
+          </section>
+        </div>
+      </main>
+      <footer>
+        <p>&copy; 2025 Funding Tracker. All rights reserved.</p>
+      </footer>
+    </div>
+  );
 }
 
-export default App
+export default App;
